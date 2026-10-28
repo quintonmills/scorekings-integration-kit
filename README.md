@@ -37,6 +37,9 @@ graph TD
     class Client,Gateway primary;
     class Helmet,RateLimiter,ErrorHandler middleware;
     class Atlas,Terraform infra;
+```
+
+---
 
 ## 🚀 Key Solutions Engineering Capabilities
 
@@ -86,6 +89,8 @@ The API listens on `http://localhost:3000`.
 - Interactive Swagger UI documentation: `http://localhost:3000/docs`
 - Raw OpenAPI JSON specification: `http://localhost:3000/docs/json`
 
+---
+
 ## 🐳 Running via Docker Compose
 
 To run the application container locally alongside an isolated network configuration:
@@ -93,6 +98,8 @@ To run the application container locally alongside an isolated network configura
 ```bash
 docker-compose up --build
 ```
+
+---
 
 ## ☁️ Terraform Infrastructure Deployment
 
@@ -112,6 +119,8 @@ terraform plan
 terraform apply
 ```
 
+---
+
 ## 🔌 API Overview
 
 | Method | Endpoint | Authentication | Description |
@@ -122,6 +131,8 @@ terraform apply
 
 Partner API credentials are validated against SHA-256 hashes stored in the database. See the [Migration Guide](./docs/MIGRATION_GUIDE.md) for detailed discovery workflows and field mapping.
 
+---
+
 ## 🛠️ Useful Commands
 
 ```bash
@@ -130,6 +141,8 @@ npm run build     # Compile strict TypeScript to dist/
 npm start         # Run the compiled production build
 npm test          # Run Jest test suites
 ```
+
+---
 
 ## ☁️ Render Deployment & CI/CD
 
