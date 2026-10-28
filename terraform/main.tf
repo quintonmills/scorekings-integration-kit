@@ -5,7 +5,7 @@ resource "mongodbatlas_cluster" "cluster" {
   cluster_type = "REPLICASET"
   replication_specs {
     num_shards = 1
-    region_configs {
+    regions_config {
       electable_nodes = 3
       priority        = 7
       read_only_nodes = 0
@@ -18,14 +18,14 @@ resource "mongodbatlas_cluster" "cluster" {
   mongo_db_version             = "7.0"
   provider_name                = "TENANT"
   backing_provider_name        = "AWS"
-  provider_instance_size_name  = "M0" # Free tier / scalable to M2/M10 for production
+  provider_instance_size_name  = "M0"
 }
 
 # 2. Database User Configuration
 resource "mongodbatlas_database_user" "db_user" {
   project_id         = var.atlas_project_id
   username           = "scorekings_admin"
-  password           = "SuperSecureChangeMe123!" # In real workflows, pass via TF_VAR or secrets manager
+  password           = "SuperSecureChangeMe123!"
   auth_database_name = "admin"
 
   roles {
