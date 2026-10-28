@@ -14,7 +14,14 @@ const rateLimitWindowMs = Number(process.env.RATE_LIMIT_WINDOW_MS) || 60_000;
 const rateLimitMax = Number(process.env.RATE_LIMIT_MAX) || 100;
 
 app.disable("x-powered-by");
-app.use(helmet());
+
+// Allow Swagger UI to load inline scripts & styles while maintaining Helmet security
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
+
 app.use(cors({ origin: process.env.CORS_ORIGIN ?? "*" }));
 app.use(
   rateLimit({
@@ -27,7 +34,15 @@ app.use(
 app.use(express.json({ limit: "2mb" }));
 app.use(express.text({ type: ["text/csv", "application/csv"], limit: "2mb" }));
 
+// Expose OpenAPI spec in raw JSON format
+app.get("/docs/json", (_req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(openApiSpec);
+});
+
+// Swagger UI mount
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
+
 app.use("/api/v1", apiRoutes);
 app.use((_req, res) => {
   res.status(404).type("application/problem+json").json({
