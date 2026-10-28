@@ -11,24 +11,32 @@ An enterprise-grade B2B integration platform and cloud-native partner API design
 
 ## 🏗️ Cloud-Native Architecture
 
-```text
-                   [ Client / B2B Partner ]
-                              │
-                              ▼
-               [ Render Reverse Proxy / ALB ]
-                              │
-                              ▼
-              [ Express API Gateway (Node.js) ]
-     ┌────────────────────────┼────────────────────────┐
-     │ (Security Headers)     │ (Tiered Rate Limiting) │ (RFC 7807 Errors)
-     ▼                        ▼                        ▼
- [ Helmet ]           [ 60 / 1000 req limit ]    [ Problem Details ]
-     │
-     └───────────────────────► [ MongoDB Atlas (M0 Replica Set) ]
-                               (Provisioned via Terraform IaC)
-```
+```mermaid
+graph TD
+    %% Client & Gateway Layer
+    Client["Client / B2B Partner"] -->|HTTP / HTTPS| Proxy["Render Reverse Proxy / ALB"]
+    Proxy -->|Forwarded Request| Gateway["Express API Gateway (Node.js / TypeScript)"]
 
----
+    %% Gateway Middleware Layer
+    subgraph Gateway Middleware
+        Gateway --> Helmet["Helmet Security Headers"]
+        Gateway --> RateLimiter["Dynamic Rate Limiter (60 vs 1000 req)"]
+        Gateway --> ErrorHandler["RFC 7807 Problem Details Handler"]
+    end
+
+    %% Infrastructure & Data Persistence
+    Gateway -->|Mongoose ODM| Atlas["MongoDB Atlas M0 Replica Set"]
+    
+    %% Terraform Provisioning
+    Terraform["Terraform IaC"] -->|Provisions Cluster & Access List| Atlas
+
+    classDef primary fill:#1f2937,stroke:#3b82f6,stroke-width:2px,color:#fff;
+    classDef middleware fill:#374151,stroke:#60a5fa,stroke-width:1px,color:#fff;
+    classDef infra fill:#111827,stroke:#10b981,stroke-width:2px,color:#fff;
+
+    class Client,Gateway primary;
+    class Helmet,RateLimiter,ErrorHandler middleware;
+    class Atlas,Terraform infra;
 
 ## 🚀 Key Solutions Engineering Capabilities
 
