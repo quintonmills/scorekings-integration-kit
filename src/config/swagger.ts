@@ -7,20 +7,35 @@ const options: swaggerJsdoc.Options = {
     info: {
       title: "ScoreKings Partner Integration API",
       version: "1.0.0",
-      description: "Partner API for legacy data migration and licensed league feeds."
+      description: `
+Partner API for legacy data migration and licensed league feeds.
+
+🚀 **Explore & Test:**
+* [View Raw OpenAPI Spec](/docs/json)
+* [Run in Postman / Download Collection](https://app.getpostman.com/run-collection/YOUR-POSTMAN-COLLECTION-LINK-HERE)
+      `,
     },
-    servers: [{ url: "/" }],
+    servers: [
+      {
+        url: "https://scorekings-integration-kit.onrender.com/api/v1",
+        description: "Production Render Cloud Environment",
+      },
+      {
+        url: "/api/v1",
+        description: "Local / Relative Server",
+      },
+    ],
     components: {
       securitySchemes: {
         ScoreKingsApiKey: {
           type: "apiKey",
           in: "header",
-          name: "X-ScoreKings-API-Key"
-        }
-      }
-    }
+          name: "X-ScoreKings-API-Key",
+        },
+      },
+    },
   },
-  apis: [path.resolve(__dirname, "../routes/*.{ts,js}")]
+  apis: [path.resolve(__dirname, "../routes/*.{ts,js}")],
 };
 
 export const openApiSpec = swaggerJsdoc(options);
