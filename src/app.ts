@@ -1,6 +1,6 @@
 import "dotenv/config";
 import cors from "cors";
-import express from "express";
+import express, { Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
@@ -35,7 +35,7 @@ app.use(express.json({ limit: "2mb" }));
 app.use(express.text({ type: ["text/csv", "application/csv"], limit: "2mb" }));
 
 // Expose OpenAPI spec in raw JSON format
-app.get("/docs/json", (_req, res) => {
+app.get("/docs/json", (_req: Request, res: Response) => {
   res.setHeader("Content-Type", "application/json");
   res.send(openApiSpec);
 });
@@ -44,7 +44,9 @@ app.get("/docs/json", (_req, res) => {
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
 
 app.use("/api/v1", apiRoutes);
-app.use((_req, res) => {
+
+// 404 RFC 7807 Fallback Handler
+app.use((_req: Request, res: Response) => {
   res.status(404).type("application/problem+json").json({
     type: "about:blank",
     title: "Not Found",
@@ -54,4 +56,5 @@ app.use((_req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
 app.use(errorHandler);
