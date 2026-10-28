@@ -1,0 +1,140 @@
+{
+  "info": {
+    "_postman_id": "c1b59609-02f8-44c9-9846-9febbd62822b",
+    "name": "ScoreKings SaaS Integration",
+    "description": "Smoke tests for health, legacy migration, licensed league pagination, and API-key enforcement.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/v1/health", "host": ["{{baseUrl}}"], "path": ["api", "v1", "health"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Health responds with 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Health payload has the expected schema', function () {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.have.property('status', 'ok');",
+              "  pm.expect(body).to.have.property('service').that.is.a('string');",
+              "  pm.expect(body).to.have.property('apiVersion', 'v1');",
+              "  pm.expect(body).to.have.property('timestamp').that.is.a('string');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ingest legacy league JSON",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-ScoreKings-API-Key", "value": "{{apiKey}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"records\": [\n    { \"legacy_id\": \"league-demo-001\", \"league_name\": \"Premier League\", \"season\": \"2025\", \"recordType\": \"league\" }\n  ]\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/api/v1/migration/ingest", "host": ["{{baseUrl}}"], "path": ["api", "v1", "migration", "ingest"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Migration responds with 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Migration payload has the expected schema', function () {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.migrationId).to.be.a('string');",
+              "  pm.expect(body.status).to.eql('SUCCESS');",
+              "  pm.expect(body.receivedCount).to.eql(1);",
+              "  pm.expect(body.transformedCount).to.eql(1);",
+              "  pm.expect(body.durationMs).to.be.a('number');",
+              "  pm.expect(body.errors).to.be.an('array');",
+              "  pm.environment.set('migrationId', body.migrationId);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get licensed leagues",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-ScoreKings-API-Key", "value": "{{apiKey}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/licensing/leagues?page=1&pageSize=25",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "licensing", "leagues"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "25" }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Licensed leagues responds with 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Licensed leagues response schema is valid', function () {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.data).to.be.an('array');",
+              "  pm.expect(body.pagination).to.be.an('object');",
+              "  pm.expect(body.pagination.page).to.be.a('number');",
+              "  pm.expect(body.pagination.pageSize).to.be.a('number');",
+              "  pm.expect(body.pagination.total).to.be.a('number');",
+              "  body.data.forEach(function (item) {",
+              "    pm.expect(item.entityType).to.eql('league');",
+              "    pm.expect(item.externalId).to.be.a('string');",
+              "    pm.expect(item.name).to.be.a('string');",
+              "  });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reject request without API key",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/v1/licensing/leagues", "host": ["{{baseUrl}}"], "path": ["api", "v1", "licensing", "leagues"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Missing API key returns 401 Unauthorized', function () { pm.response.to.have.status(401); });",
+              "pm.test('Unauthorized response uses Problem Details', function () {",
+              "  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/problem+json');",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.status).to.eql(401);",
+              "  pm.expect(body).to.have.property('detail').that.is.a('string');",
+              "  pm.expect(body).to.have.property('instance').that.is.a('string');",
+              "  pm.expect(body).to.have.property('timestamp').that.is.a('string');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
