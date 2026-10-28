@@ -51,3 +51,13 @@ npm test          # Run Jest tests
 ```
 
 Import the checked-in collection and environment from [postman/](./postman/) to run the integration checks. Configure `baseUrl` and `apiKey` in the Postman environment before sending protected requests.
+
+## Render deployment
+
+The TypeScript compiler and declaration packages are development dependencies, so the Render build must install them before compiling. Set the Render **Build Command** to:
+
+```sh
+npm ci --include=dev && npm run build
+```
+
+Set the **Start Command** to `npm start`. Configure `MONGODB_URI` and `SCOREKINGS_API_KEY` as Render environment variables. Do not use a production-only install before the build; that omits `@types/node` and `@types/express`, which TypeScript needs to compile the API.
