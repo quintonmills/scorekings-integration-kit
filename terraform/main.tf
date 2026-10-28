@@ -15,7 +15,6 @@ resource "mongodbatlas_cluster" "cluster" {
   }
   cloud_backup                 = true
   auto_scaling_disk_gb_enabled = true
-  mongo_db_version             = "7.0"
   provider_name                = "TENANT"
   backing_provider_name        = "AWS"
   provider_instance_size_name  = "M0"
