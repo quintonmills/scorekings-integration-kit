@@ -11,7 +11,17 @@
       "request": {
         "method": "GET",
         "header": [],
-        "url": { "raw": "{{baseUrl}}/api/v1/health", "host": ["{{baseUrl}}"], "path": ["api", "v1", "health"] }
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "health"
+          ]
+        }
       },
       "event": [
         {
@@ -37,15 +47,36 @@
       "request": {
         "method": "POST",
         "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "X-ScoreKings-API-Key", "value": "{{apiKey}}" }
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-ScoreKings-API-Key",
+            "value": "{{apiKey}}"
+          }
         ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"records\": [\n    { \"legacy_id\": \"league-demo-001\", \"league_name\": \"Premier League\", \"season\": \"2025\", \"recordType\": \"league\" }\n  ]\n}",
-          "options": { "raw": { "language": "json" } }
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
         },
-        "url": { "raw": "{{baseUrl}}/api/v1/migration/ingest", "host": ["{{baseUrl}}"], "path": ["api", "v1", "migration", "ingest"] }
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/migration/ingest",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "migration",
+            "ingest"
+          ]
+        }
       },
       "event": [
         {
@@ -73,14 +104,32 @@
       "name": "Get licensed leagues",
       "request": {
         "method": "GET",
-        "header": [{ "key": "X-ScoreKings-API-Key", "value": "{{apiKey}}" }],
+        "header": [
+          {
+            "key": "X-ScoreKings-API-Key",
+            "value": "{{apiKey}}"
+          }
+        ],
         "url": {
           "raw": "{{baseUrl}}/api/v1/licensing/leagues?page=1&pageSize=25",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "v1", "licensing", "leagues"],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "licensing",
+            "leagues"
+          ],
           "query": [
-            { "key": "page", "value": "1" },
-            { "key": "pageSize", "value": "25" }
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "pageSize",
+              "value": "25"
+            }
           ]
         }
       },
@@ -114,7 +163,18 @@
       "request": {
         "method": "GET",
         "header": [],
-        "url": { "raw": "{{baseUrl}}/api/v1/licensing/leagues", "host": ["{{baseUrl}}"], "path": ["api", "v1", "licensing", "leagues"] }
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/licensing/leagues",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "licensing",
+            "leagues"
+          ]
+        }
       },
       "event": [
         {
