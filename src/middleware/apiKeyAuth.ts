@@ -1,5 +1,5 @@
 import { createHash, timingSafeEqual } from "node:crypto";
-import type { RequestHandler } from "express";
+import type { Request, Response, NextFunction, RequestHandler } from "express";
 import { PartnerKey } from "../models/PartnerKey";
 import { AppError } from "./errorHandler";
 
@@ -12,7 +12,11 @@ function isEqualSecret(candidate: string, expected: string): boolean {
   );
 }
 
-export const apiKeyAuth: RequestHandler = async (req, res, next) => {
+export const apiKeyAuth: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const apiKey = req.header("X-ScoreKings-API-Key");
     if (!apiKey) {

@@ -1,4 +1,4 @@
-import type { ErrorRequestHandler } from "express";
+import type { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import type { ProblemDetails } from "../types";
 
 export class AppError extends Error {
@@ -13,7 +13,12 @@ export class AppError extends Error {
   }
 }
 
-export const errorHandler: ErrorRequestHandler = (error: unknown, req, res, _next) => {
+export const errorHandler: ErrorRequestHandler = (
+  error: unknown,
+  req: Request,
+  res: Response,
+  _next: NextFunction
+): void => {
   const appError = error instanceof AppError ? error : undefined;
   const isJsonParseError =
     error instanceof SyntaxError && Object.prototype.hasOwnProperty.call(error, "body");

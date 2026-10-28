@@ -1,4 +1,4 @@
-import type { RequestHandler } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
 import { LeagueData } from "../models/LeagueData";
 import { AppError } from "../middleware/errorHandler";
 import type { EntityType } from "../types";
@@ -11,7 +11,11 @@ function getPositiveInteger(value: unknown, fallback: number, maximum: number): 
   return Number.isSafeInteger(parsed) && parsed > 0 ? Math.min(parsed, maximum) : fallback;
 }
 
-export const getLicensedLeagues: RequestHandler = async (req, res, next) => {
+export const getLicensedLeagues: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const partnerId = res.locals.partnerId;
     if (!partnerId) {

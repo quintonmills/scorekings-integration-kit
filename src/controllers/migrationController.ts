@@ -1,9 +1,13 @@
-import type { RequestHandler } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
 import { parse } from "csv-parse/sync";
 import { AppError } from "../middleware/errorHandler";
 import { migrateLegacyPayload } from "../services/migrationService";
 
-export const ingestMigration: RequestHandler = async (req, res, next) => {
+export const ingestMigration: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const partnerId = res.locals.partnerId;
     if (!partnerId) {

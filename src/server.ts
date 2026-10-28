@@ -12,7 +12,7 @@ async function startServer(): Promise<void> {
 
   const shutdown = (signal: string): void => {
     console.info(`${signal} received; closing the API server.`);
-    server.close(async (error) => {
+    server.close(async (error?: Error) => {
       if (error) {
         console.error("Failed to close the HTTP server cleanly.", error);
         process.exitCode = 1;
