@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Express API Service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: scorekings_api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/scorekings_integration
+      - SCOREKINGS_API_KEY=demo-secret-key-123
+      - SCOREKINGS_DEMO_PARTNER_ID=demo-partner
+    depends_on:
+      - mongo
+    networks:
+      - scorekings-network
+
+  # Local MongoDB Container
+  mongo:
+    image: mongo:6.0
+    container_name: scorekings_mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - scorekings-network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  scorekings-network:
+    driver: bridge
